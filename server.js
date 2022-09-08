@@ -15,7 +15,6 @@ app.use(express.json());
 require("dotenv").config();
 
 // RBAC functions
-
 const canModifyUsers = ({ currentAdmin }) =>
   currentAdmin && currentAdmin.role === "admin";
 
@@ -82,7 +81,6 @@ const adminJs = new AdminJS({
 const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
   authenticate: async (email, password) => {
     const user = await User.findOne({ email });
-    console.log();
     if (user) {
       const matched = await bcrypt.compare(password, user.encryptedPassword);
       if (matched) {
@@ -96,8 +94,8 @@ const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
 
 app.use(adminJs.options.rootPath, router);
 
-// Simple home page request
-app.post("/", async function (req, res) {
+// Simple hello page request
+app.get("/hello", async function (req, res) {
   res.send("Hello");
 });
 
@@ -106,8 +104,8 @@ const run = async () => {
   await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
   });
-  await app.listen(8000, () =>
-    console.log(`Example app listening on http://localhost:8000/admin`)
+  await app.listen(process.env.PORT, () =>
+    console.log(`Example app listening on http://localhost:${process.env.PORT}`)
   );
 };
 

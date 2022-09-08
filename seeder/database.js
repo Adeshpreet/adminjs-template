@@ -1,7 +1,7 @@
 const database = [
   {
     name: "Adesh",
-    email: "adesh@gmail.com",
+    email: "adeshpreet.singh@hestabit.in",
     encryptedPassword:
       "$2a$10$mR4t6UsstebDc0sB4AD/jOxu8p7/NkQWiPvs7q78398xsK7bqTvd.",
     role: "admin",
