@@ -5,14 +5,19 @@ const AdminJS = require("adminjs");
 const AdminJSExpress = require("@adminjs/express");
 const bcrypt = require("bcrypt");
 const User = require("./models/user");
-
-// We have to tell AdminJS that we will manage mongoose resources with it
-AdminJS.registerAdapter(require("@adminjs/mongoose"));
+//const cors = require("cors");
+//const cookieParser = require("cookie-parser");
 
 // express server definition
 const app = express();
-app.use(express.json());
 require("dotenv").config();
+
+// CORS & CookieParser (Please also uncomment imports in requirements section)
+//app.use(cors());
+//app.use(cookieParser());
+
+// We have to tell AdminJS that we will manage mongoose resources with it
+AdminJS.registerAdapter(require("@adminjs/mongoose"));
 
 // RBAC functions
 const canModifyUsers = ({ currentAdmin }) =>
@@ -58,6 +63,9 @@ const adminJs = new AdminJS({
       },
     },
   ],
+  dashboard: {
+    component: AdminJS.bundle("./components/dashboard"),
+  },
   branding: {
     companyName: "HestaBit",
     logo: "https://1z1euk35x7oy36s8we4dr6lo-wpengine.netdna-ssl.com/wp-content/uploads/2021/11/Hestabit-Logo.jpg",
@@ -89,7 +97,7 @@ const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
     }
     return false;
   },
-  cookiePassword: "12345678",
+  cookiePassword: process.env.COOKIEPASSWORD,
 });
 
 app.use(adminJs.options.rootPath, router);
@@ -98,7 +106,10 @@ app.use(adminJs.options.rootPath, router);
 app.get("/hello", async function (req, res) {
   res.send("Hello");
 });
-
+app.post("/hello", async function (req, res) {
+  console.log(req.fields);
+  res.send("XD");
+});
 // Running the server
 const run = async () => {
   await mongoose.connect(process.env.MONGO_URI, {
